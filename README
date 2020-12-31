@@ -1,3 +1,8 @@
 README for ADC Streaming from an ST-micro STM32F7 MCU.
 
-See blog post for details: <TBD>
+The STM32F746G supports capturing ADC on 3 engines at over 1 million samples/second.  
+Using Double-Buffered DMA you can process one buffer while capturing the next.
+
+See blog post for details: 
+https://microcontrollerstuff.blogspot.com/2020/12/double-buffered-dma-from-adc.html
+

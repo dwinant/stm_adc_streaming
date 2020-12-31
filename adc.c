@@ -46,9 +46,9 @@ void process_buffer (int which)
 	for (int i = 0; i < BUF0_SIZE; i++)
 		sum += mem[which][i];
 
-	if (++processed % 7 == 0) {
+	if (++processed % 377 == 0) {
 		flag_up();
-		output (" buf %d sum %08x avg %x\r\n", which, sum, sum / BUF0_SIZE);
+		output ("%c %x\r\n", '0'+which, sum / BUF0_SIZE);
 		flag_down();
 	}
 }
@@ -61,6 +61,7 @@ void process_buffer (int which)
   */
 void HAL_ADC_DB_ConvCpltCallback(ADC_HandleTypeDef* hadc, int which)
 {
+	//flag_set(which);
   buffer_to_process = which;
   go_ahead_process_buffer = TRUE;
 
@@ -80,12 +81,17 @@ void adc_process (void)
 
   output ("A/D started\r\n");
 
+  uint32_t last_report = HAL_GetTick();
   while (1) {
 	  if (go_ahead_process_buffer) {
 		  int which = buffer_to_process;
 		  go_ahead_process_buffer = FALSE;
 
 		  process_buffer (which);
+	  } else if (HAL_GetTick() - last_report > 5000) {
+		  output ("c %6d %6d\r\n", conversion_count[0], conversion_count[1]);
+		  last_report = HAL_GetTick();
 	  }
+
   }
 }
